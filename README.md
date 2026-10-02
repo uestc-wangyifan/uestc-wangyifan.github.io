@@ -2,9 +2,9 @@
 
 王一帆的静态个人主页、技术博客与工程项目档案。Astro + Tailwind CSS + TypeScript + Markdown / MDX，使用 GitHub Actions 部署到 GitHub Pages。没有常驻后端、数据库或服务器要求。
 
-默认地址：<https://uestc-wangyifan.github.io>
+GitHub 默认地址：<https://uestc-wangyifan.github.io>
 
-准备的自定义域名：`uestcwangyifan.me`
+自定义域名：`uestcwangyifan.me`（Pages 中已配置；HTTPS 需 GitHub 证书签发后启用）
 
 ## 本地开发
 
@@ -187,7 +187,7 @@ gallery:
 
 ## 自定义域名 uestcwangyifan.me
 
-当前构建默认使用 `https://uestc-wangyifan.github.io` 作为 canonical、RSS 与 sitemap 的地址，以便在 DNS 尚未准备好时直接访问 GitHub 默认域名。启用自定义域名时：
+本地构建未指定环境变量时使用 `https://uestc-wangyifan.github.io` 作为 canonical、RSS 与 sitemap 的地址。本仓库已设置 Actions Variable `SITE_URL=https://uestcwangyifan.me`，线上工作流会使用自定义域名。GitHub 默认地址会遵循 Pages 的 Custom domain 设置进行跳转。新仓库启用自定义域名时：
 
 1. 建议先在 GitHub 账号 **Settings → Pages** 验证域名所有权。TXT 名称和值使用 GitHub 当时提供的实际内容，不要猜测验证码。
 2. 在仓库 **Settings → Pages → Custom domain** 填入 `uestcwangyifan.me` 并保存。
@@ -213,7 +213,7 @@ gallery:
 
 可选 IPv6：为 `@` 添加 `2606:50c0:8000::153`、`2606:50c0:8001::153`、`2606:50c0:8002::153`、`2606:50c0:8003::153` 四条 AAAA，保留 IPv4 A 记录。
 
-先检查同名 `@` / `www` 的已有记录。**如果 Minecraft 依赖根域名 `@`，或其 SRV target 指向根域名，直接把 `@` 改为 GitHub IP 会影响 Minecraft。不要执行这个变更，应先安排独立游戏子域名，或让博客使用单独子域名。** 本任务没有检查或更改你的 Minecraft DNS，不假定根域名未使用。
+先检查同名 `@` / `www` 的已有记录。**如果 Minecraft 依赖根域名 `@`，或其 SRV target 指向根域名，直接把 `@` 改为 GitHub IP 会影响 Minecraft。不要执行这个变更，应先安排独立游戏子域名，或让博客使用单独子域名。** 本工程不会更改 Minecraft DNS，也不能从网站所需记录推断完整游戏配置。
 
 保留 Minecraft 的 A/AAAA、SRV、端口与目标地址；不要删除 `_minecraft._tcp`、游戏主机子域名、MX/TXT，不要批量重置 DNS 或改 Nameservers。`www` 若也被其他用途占用，先确认再设置。已有同名冲突记录需逐条确认用途后处理，不能盲目叠加新旧网站 IP。
 
