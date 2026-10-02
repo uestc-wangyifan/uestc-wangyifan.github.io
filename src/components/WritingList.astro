@@ -1,0 +1,16 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../lib/content';
+import Icon from './Icon.astro';
+interface Props { posts: CollectionEntry<'blog'>[]; filterable?: boolean }
+const { posts, filterable = false } = Astro.props;
+---
+<div class="writing-list">
+  {posts.map((post) => <article class="writing-row" data-post={filterable || undefined} data-category={post.data.category} data-tags={JSON.stringify(post.data.tags)}>
+    <div class="writing-meta"><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time><span>{post.data.category}</span></div>
+    <div class="writing-body"><h3><a href={`/blog/${post.id}/`}>{post.data.title}</a>{post.data.sample && <span class="sample-label">示例</span>}</h3><p>{post.data.description}</p>
+      <div class="writing-tags">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div>
+    </div>
+    <a class="writing-arrow" href={`/blog/${post.id}/`} aria-label={`阅读 ${post.data.title}`}><Icon name="arrow" /></a>
+  </article>)}
+</div>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects } from '../../lib/content';
+const projects = await getProjects();
+---
+<BaseLayout title="Projects" description="王一帆的嵌入式系统、机器人与电子硬件项目档案。">
+  <div class="shell page-space">
+    <header class="page-heading"><p class="eyebrow">PROJECT ARCHIVE / {String(projects.length).padStart(2, '0')}</p><h1>Projects<span class="accent-text">.</span></h1><p>工程项目档案。记录问题、设计与验证过程。</p></header>
+    <p class="archive-note">目前展示项目目录；技术细节、实测结果与项目仓库将在资料整理后补充。卡片中的线稿仅为概念示意。</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">{projects.map((project) => <ProjectCard project={project} />)}</div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+---
+<footer class="site-footer shell">
+  <div class="footer-top"><a class="footer-name" href="/">Wang Yifan<span>工程、记录与思考。</span></a>
+    <div class="footer-links"><a href={site.github} target="_blank" rel="noopener noreferrer">GitHub <Icon name="external" size={13} /></a>
+      {site.email ? <a href={`mailto:${site.email}`}>Email</a> : <span title="邮箱地址待补充">Email · 待补充</span>}
+      <a href="/rss.xml">RSS</a><a href="/resume/">Resume</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© {new Date().getUTCFullYear()} Wang Yifan</span><span>Built with Astro · Hosted on GitHub Pages</span></div>
+</footer>

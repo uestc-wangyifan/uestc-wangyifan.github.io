@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+interface Props { title?: string; description?: string; noindex?: boolean; type?: 'website' | 'article' }
+const { title, description = site.description, noindex = false, type = 'website' } = Astro.props;
+const pageTitle = title ? `${title} — Wang Yifan` : '王一帆 / Wang Yifan — Embedded Systems & Control';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title><meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+    <meta property="og:title" content={pageTitle} /><meta property="og:description" content={description} />
+    <meta property="og:type" content={type} /><meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Wang Yifan" /><meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary" /><meta name="theme-color" content="#fafafa" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Wang Yifan · Writing" href="/rss.xml" />
+    <script is:inline>
+      (() => {
+        let saved;
+        try { saved = localStorage.getItem('theme'); } catch {}
+        const theme = saved === 'light' || saved === 'dark' ? saved : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#111315' : '#fafafa');
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳转到主要内容</a>
+    <Navbar />
+    <main id="main"><slot /></main>
+    <Footer />
+    <script>
+      const root = document.documentElement;
+      const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
+      const system = matchMedia('(prefers-color-scheme: dark)');
+      const sync = () => {
+        const dark = root.dataset.theme === 'dark';
+        button?.setAttribute('aria-pressed', String(dark));
+        button?.setAttribute('aria-label', dark ? '切换为浅色模式' : '切换为深色模式');
+        button?.setAttribute('title', dark ? '切换为浅色模式' : '切换为深色模式');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#111315' : '#fafafa');
+      };
+      if (button) {
+        button.hidden = false;
+        sync();
+        button.addEventListener('click', () => {
+          const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = theme;
+          try { localStorage.setItem('theme', theme); } catch {}
+          sync();
+        });
+        system.addEventListener('change', () => {
+          let saved;
+          try { saved = localStorage.getItem('theme'); } catch {}
+          if (saved !== 'light' && saved !== 'dark') { root.dataset.theme = system.matches ? 'dark' : 'light'; sync(); }
+        });
+      }
+    </script>
+  </body>
+</html>

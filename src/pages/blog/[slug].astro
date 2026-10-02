@@ -1,0 +1,22 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts, formatDate } from '../../lib/content';
+export async function getStaticPaths() {
+  return (await getPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+interface Props { post: CollectionEntry<'blog'> }
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
+---
+<BaseLayout title={post.data.title} description={post.data.description} type="article">
+  <div class="shell page-space">
+    <a class="back-link" href="/blog/">← All writing</a>
+    <header class="detail-heading"><p class="eyebrow">{post.data.category} / <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time></p><h1>{post.data.title}</h1><p>{post.data.description}</p><div class="writing-tags">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div></header>
+    {post.data.sample && <aside class="sample-notice"><span class="mono">SAMPLE NOTE</span>这是一篇占位示例，用于展示文章格式。代码、公式和图示均非个人项目成果。</aside>}
+    <div class="article-grid"><article class="prose article-main"><Content /><div class="article-end">END OF NOTE <span>·</span> <a href="/blog/">返回文章列表</a></div></article>
+      {toc.length > 0 && <aside class="toc"><details open><summary>On this page</summary><nav aria-label="文章目录"><ol>{toc.map((heading) => <li class={heading.depth === 3 ? 'toc-sub' : ''}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details></aside>}
+    </div>
+  </div>
+</BaseLayout>

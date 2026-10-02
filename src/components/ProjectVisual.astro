@@ -1,0 +1,17 @@
+---
+interface Props { kind: 'robotics' | 'signals' | 'electronics' | 'instrument' }
+const { kind } = Astro.props;
+const labels = { robotics: '01 / ROBOTICS', signals: '02 / SIGNALS', electronics: '03 / ELECTRONICS', instrument: '04 / INSTRUMENT' };
+---
+<div class={`project-visual visual-${kind}`} aria-hidden="true">
+  <span class="visual-label">{labels[kind]}</span>
+  <svg viewBox="0 0 440 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+      {kind === 'robotics' && <><path class="diagram-faint" d="M22 115h70c55 0 55-76 110-76h75c55 0 55 76 100 76h45" stroke-dasharray="5 7" /><rect x="186" y="57" width="68" height="48" rx="5" /><path d="M210 66h20v21h-20zM194 92h52M220 105v18m-12 0h24" /><rect x="174" y="69" width="8" height="23" rx="2" /><rect x="258" y="69" width="8" height="23" rx="2" /><path d="M203 52v-9m17 9v-9m17 9v-9" /><circle cx="203" cy="39" r="2" /><circle cx="220" cy="39" r="2" /><circle cx="237" cy="39" r="2" /></>}
+      {kind === 'signals' && <><path class="diagram-faint" d="M30 83h380M30 35v96" /><path d="M30 83h34l9-10 10 19 10-32 10 47 10-60 10 73 10-83 10 91 10-102 10 115 10-91 10 64 10-48 10 26 10-9h21" /><path d="M284 51h12v64h-12zm24 18h12v46h-12zm24-34h12v80h-12zm24 29h12v51h-12zm24 19h12v32h-12z" /></>}
+      {kind === 'electronics' && <><path d="M38 80h55m47 0h44m55 0h30m0 0v46m-9 0h18m-14 5h10m-7 5h4M269 80h57m0 0v15m-10 0h20m-20 7h20m-10 0v24m-9 0h18m-14 5h10m-7 5h4M326 80h76" /><rect x="93" y="61" width="47" height="38" rx="3" /><path d="M184 80c0-22 14-22 14 0 0-22 14-22 14 0 0-22 14-22 14 0 0-22 13-22 13 0" /><circle cx="38" cy="80" r="3" /><circle cx="402" cy="80" r="3" /><path class="diagram-faint" d="M112 45V27h125v23" /></>}
+      {kind === 'instrument' && <><rect x="82" y="52" width="228" height="75" rx="3" /><path d="M115 53v73m32-73v73m32-73v73m32-73v73m32-73v73m32-73v73" /><path d="M106 53h17v39h-17zm32 0h17v39h-17zm64 0h17v39h-17zm32 0h17v39h-17zm32 0h17v39h-17z" fill="var(--visual-fill)" /><path class="diagram-faint" d="M336 94V52m10 31V42m10 47V60m10 36V70" /></>}
+    </g>
+  </svg>
+  <span class="visual-caption">CONCEPT / 示意图</span>
+</div>

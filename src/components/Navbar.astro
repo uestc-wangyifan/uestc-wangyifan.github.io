@@ -1,0 +1,42 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+const links = [{ href: '/projects/', label: 'Projects' }, { href: '/blog/', label: 'Blog' }, { href: '/about/', label: 'About' }];
+const path = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="shell navbar">
+    <a class="brand" href="/" aria-label="Wang Yifan · 首页"><span class="brand-mark" aria-hidden="true">wy.</span>{site.name}</a>
+    <nav aria-label="主导航" class="desktop-nav">
+      {links.map(({ href, label }) => <a href={href} aria-current={path.startsWith(href) ? 'page' : undefined}>{label}</a>)}
+      <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub <Icon name="external" size={13} /></a>
+    </nav>
+    <div class="nav-controls">
+      <button class="icon-button theme-toggle" type="button" aria-label="切换为深色模式" title="切换主题" aria-pressed="false" hidden>
+        <span class="theme-sun"><Icon name="sun" /></span><span class="theme-moon"><Icon name="moon" /></span>
+      </button>
+      <button class="icon-button menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="展开导航" hidden><Icon name="menu" /></button>
+    </div>
+  </div>
+  <nav id="mobile-nav" class="mobile-nav shell" aria-label="移动端导航">
+    {links.map(({ href, label }) => <a href={href} aria-current={path.startsWith(href) ? 'page' : undefined}>{label}</a>)}
+    <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub <Icon name="external" size={13} /></a>
+  </nav>
+</header>
+<script>
+  const menu = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.querySelector<HTMLElement>('#mobile-nav');
+  if (menu && nav) {
+    menu.hidden = false;
+    nav.hidden = true;
+    const close = () => { menu.setAttribute('aria-expanded', 'false'); menu.setAttribute('aria-label', '展开导航'); nav.hidden = true; };
+    menu.addEventListener('click', () => {
+      const open = menu.getAttribute('aria-expanded') !== 'true';
+      menu.setAttribute('aria-expanded', String(open));
+      menu.setAttribute('aria-label', open ? '收起导航' : '展开导航');
+      nav.hidden = !open;
+    });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { close(); menu.focus(); } });
+    matchMedia('(min-width: 640px)').addEventListener('change', close);
+  }
+</script>

@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WritingList from '../../components/WritingList.astro';
+import { getPosts } from '../../lib/content';
+import { categories } from '../../data/site';
+const posts = await getPosts();
+---
+<BaseLayout title="Blog" description="嵌入式、控制系统、电子设计、信号处理与学习笔记。">
+  <div class="shell page-space">
+    <header class="page-heading"><p class="eyebrow">WRITING / ENGINEERING NOTES</p><h1>Blog<span class="accent-text">.</span></h1><p>记录技术、推导与学习过程。让思考留下可追溯的路径。</p></header>
+    <p class="archive-note">当前三篇文章是内容格式示例，不代表个人项目实现或实测结论。</p>
+    <div class="blog-filters" hidden><div class="filter-buttons" role="group" aria-label="按分类筛选"><button data-filter="all" aria-pressed="true">All</button>{categories.map((category) => <button data-filter={category} aria-pressed="false">{category}</button>)}</div><div class="filter-status"><span data-filter-status aria-live="polite"></span><button data-clear-tag hidden>清除标签</button></div></div>
+    <WritingList posts={posts} filterable />
+    <p data-empty hidden class="empty-state">该分类或标签暂无文章。</p>
+    <a class="text-link rss-link" href="/rss.xml">Subscribe via RSS ↗</a>
+  </div>
+</BaseLayout>
+<script>
+  const filters = document.querySelector<HTMLElement>('.blog-filters');
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const rows = document.querySelectorAll<HTMLElement>('[data-post]');
+  const url = new URL(location.href);
+  let category = url.searchParams.get('category') || 'all';
+  let tag = url.searchParams.get('tag');
+  if (![...buttons].some((button) => button.dataset.filter === category)) category = 'all';
+  const clearTag = document.querySelector<HTMLButtonElement>('[data-clear-tag]');
+  const apply = () => {
+    let visible = 0;
+    rows.forEach((row) => {
+      const tags = JSON.parse(row.dataset.tags || '[]') as string[];
+      row.hidden = (category !== 'all' && row.dataset.category !== category) || (!!tag && !tags.includes(tag));
+      if (!row.hidden) visible++;
+    });
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.filter === category)));
+    const status = document.querySelector('[data-filter-status]');
+    if (status) status.textContent = `${visible} 篇文章${tag ? ` · #${tag}` : ''}`;
+    if (clearTag) clearTag.hidden = !tag;
+    const empty = document.querySelector<HTMLElement>('[data-empty]');
+    if (empty) empty.hidden = visible > 0;
+    category === 'all' ? url.searchParams.delete('category') : url.searchParams.set('category', category);
+    tag ? url.searchParams.set('tag', tag) : url.searchParams.delete('tag');
+    history.replaceState(null, '', url);
+  };
+  if (filters) { filters.hidden = false; apply(); }
+  buttons.forEach((button) => button.addEventListener('click', () => { category = button.dataset.filter || 'all'; apply(); }));
+  clearTag?.addEventListener('click', () => { tag = null; apply(); });
+</script>
